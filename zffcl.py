@@ -137,25 +137,16 @@ def flattenFiles(dirRunPath, dirInFull, dirOutFull, fnameExtensions):
    return 0
 
 #################################################################################
-def getInputDirFullPath(dirInGiven, currentDirRunning):
+def getDirFullPath(dirGiven, currentDirRunning):
 #################################################################################
    # handle special case of external volumes with a space in the name; Windows dir's shouldn't start with this, so OK.
-   dirInGiven = dirInGiven.replace("\\ ", " ")
-   if (os.path.isdir(dirInGiven)):
-      return dirInGiven
+   dirGiven = dirGiven.replace("\\ ", " ")
+   while dirGiven.startswith('"') and dirGiven.endswith('"'): dirGiven = dirGiven[1:-1]
+   while dirGiven.startswith("'") and dirGiven.endswith("'"): dirGiven = dirGiven[1:-1]
+   if (os.path.isdir(dirGiven)):
+      return dirGiven
    else:
-      return os.path.join(currentDirRunning, dirInGiven)
-
-#################################################################################
-def getOutputDirFullPath(dirOutGiven, currentDirRunning):
-#################################################################################
-   if (os.path.isdir(dirOutGiven)) and os.sep in dirOutGiven:
-      return dirOutGiven
-   elif (not os.path.isdir(dirOutGiven)) and os.sep in dirOutGiven:
-      print("\nZFF can only create a new directory one level deep, relative to this one.")
-      return ""
-   else:
-      return os.path.join(currentDirRunning, dirOutGiven)
+      return os.path.join(currentDirRunning, dirGiven)
 
 #################################################################################
 def isValidFileExtension(ext):
@@ -172,9 +163,8 @@ def getDesigFileExtensionsLC():
    # The LC is for Lower Case.
    fExtsLC = []
 
-   print("Enter valid file extensions. When done, type 'X'.\n" + 
-         "If no valid extensions are entered, all files will be flattened.\n" + 
-         "Extensions are not case sensitive.")
+   print("Enter valid file extensions (not case-sensitve). When done, type 'X'.\n" + 
+         "If no valid extensions are entered, all files will be flattened.\n\n")
 
    newExt = input("First Extension ('X' to flatten all files): ").strip()
 
@@ -188,7 +178,7 @@ def getDesigFileExtensionsLC():
          fExtsLC.append(newExt.lower())
       else:
          print(newExt, " is not a valid filename extension.")
-      print("Extensions so far: " + str(fExtsLC))
+      print("\nExtensions so far: " + str(fExtsLC))
       newExt = input("Next Extension ('X' to move on): ").strip()
 
    return fExtsLC
@@ -202,7 +192,7 @@ def runTool():
    if getattr(sys, 'frozen', False): dirCurrentPath = os.path.dirname(sys.executable)
    
    dirInFullPath = dirCurrentPath
-   dirOutFullPath = getOutputDirFullPath(dirOutBasename, dirCurrentPath)
+   dirOutFullPath = getDirFullPath(dirOutBasename, dirCurrentPath)
 
    msgInform = "You are running relative to directory: \n" + dirCurrentPath
    print(msgInform + "\n")
@@ -214,19 +204,19 @@ def runTool():
    msgOut = "New flattened directory path (skip to create or use the default directory '" + \
       DIR_OUT_BASENAME_DEFAULT + "'): "
 
-   dirInGiven = input(msgIn).strip()
+   dirGiven = input(msgIn).strip()
    dirOutGiven = input(msgOut).strip()
 
-   if len(dirInGiven) > 0: 
-      dirInFullPath = getInputDirFullPath(dirInGiven, dirCurrentPath)
-      # dirInFullPath = os.path.abspath(dirInGiven)
+   if len(dirGiven) > 0: 
+      dirInFullPath = getDirFullPath(dirGiven, dirCurrentPath)
+      # dirInFullPath = os.path.abspath(dirGiven)
       if not os.path.isdir(dirInFullPath):
          print("Not a valid input directory: \n'"+dirInFullPath+"'")
          return -1  # means nothing yet
 
    # Figure out if user entered full path or relative directory basename. Or nothing at all.
    if len(dirOutGiven) > 0: 
-      dirOutFullPath = getOutputDirFullPath(dirOutGiven, dirCurrentPath)
+      dirOutFullPath = getDirFullPath(dirOutGiven, dirCurrentPath)
 
    if len(dirOutFullPath) == 0: 
       print("Not a valid output directory: \n'"+dirOutGiven+"'")
@@ -252,19 +242,19 @@ def main():
    if os.name == 'nt': _= os.system("cls")
    else: _=os.system("clear")
 
-   strIntroMsg = "" +\
+   strIntroMsg = "\n" +\
       "**********************************************************************\n" +\
-      "************* Welcome to the Z Files Flattener v0.1.1 *************\n" +\
+      "  ************ Welcome to the Z Files Flattener v0.1.1 *************\n" +\
       "**********************************************************************\n" +\
-      "This tool copies (not moves) all files of your designated extensions from " +\
-      "the top level directory you enter, no matter the substructure or how many levels deep, " +\
+      "This tool copies (not moves) all files of your designated extensions\n" +\
+      "from the top level directory you enter,\n" +\
+      "no matter its substructure or how many levels deep, \n" +\
       "into a single directory, but in a flat, one level structure.\n" +\
       "This output directory will be created if it does not exist.\n" +\
       "Its default name is '" + DIR_OUT_BASENAME_DEFAULT + "'.\n" +\
-      "If it exists already, no files already inside will be overwritten, "+\
+      "If it exists already, no files already inside will be overwritten,\n"+\
       "but new files with unique names will still be copied.\n" +\
-      "So be careful if you don't want files from different input directories mixed into the same output directory.\n" +\
-      "\nCoded and released by @gazfilm Feb 2020.\n " +\
+      "\nCoded and released by @gazfilm Feb 2020.\n" +\
       "**********************************************************************\n"
    print(strIntroMsg)
    ans ="y"
