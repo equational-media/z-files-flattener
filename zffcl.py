@@ -1,19 +1,11 @@
-""" ZFF for the Command Line
+""" ZFF for the Command Line, or Z Files Flattener
 ZFFCL 0.1.1
 
 SYNOPSIS
+copies files of any chosen extensions from a multilevel directory structure into one flat folder.
 'python3 zffcl.py'
-default for origdir is . the current directory. 
-default for flatdir is 'zff-flat' - will be created in current folder if it does not exist.
-
-Restrictions...
-Can only create a new directory local and one level deep to the current working directory.
-This is for safety's sake, for now.
-
-Future User Option...
-retain or set new metadata on copy.
-Currently it retains the metadata from original file. (shutil copy2 vs copyfile)
-This is probably best for post audio but slower.
+default for the input is the current directory. 
+default for the output is 'zff-flat' and will be created in current folder if it does not exist.
 
 """
 
