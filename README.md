@@ -8,7 +8,7 @@ There is also an included executable, one for each OS, compiled from that script
 
 If you do run python globally on your system, you can run it via python as well, from any folder.
 
-Here's a [video tutorial on using ZFF]([https://youtu.be/BuyJt5O7QnU).
+Here's a [video tutorial on using ZFF](https://youtu.be/BuyJt5O7QnU).
 
 ### What Happens When It Runs:
 - You are prompted to give a list of extensions. One extension at a time. Ex. MP3, WAV, txt, png. It will only copy files of your given extensions. When done entering, type "x" (or "X"). The extensions are NOT case-sensitive. If you want to copy ALL the files from a directory structure, just hit "x" without entering any extensions first.
